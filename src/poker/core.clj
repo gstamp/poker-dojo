@@ -53,19 +53,16 @@
 ;;; Calc winning hand
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn array-value-to-value[[hand-type-index value]] (+ (* 100 hand-type-index) value))
 (defn hand-value [hand]
-  (->> (map-indexed (fn[index hand-type] [index (hand-type hand)])
-                    types)
+  (->> (map-indexed (fn[index hand-type] [index (hand-type hand)]) types)
        (filter last)
-       last
-       array-value-to-value))
+       last))
 (defn winning-hand [hand1-str hand2-str]
-  (let [value1 (hand-value (str/split hand1-str #" "))
-        value2 (hand-value (str/split hand2-str #" "))]
-    (cond (> value1 value2) 1
-          (< value1 value2) 2
-          :else 0)))
+  (condp = (compare (hand-value (str/split hand1-str #" "))
+                    (hand-value (str/split hand2-str #" ")))
+    -1 2
+    1  1
+    0  0))
 
 (defn -main
   [& args]
